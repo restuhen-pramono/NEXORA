@@ -1,0 +1,697 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const NexoraApp());
+}
+
+class NexoraApp extends StatelessWidget {
+  const NexoraApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'NEXORA',
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF6C63FF)),
+        scaffoldBackgroundColor: const Color(0xFFF8FAFC),
+      ),
+      home: const SplashScreen(),
+    );
+  }
+}
+
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    Future.delayed(const Duration(seconds: 3), () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const LoginPage()),
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF6C63FF), Color(0xFF8B5CF6)],
+          ),
+        ),
+        child: const Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.school, color: Colors.white, size: 100),
+
+            SizedBox(height: 20),
+
+            Text(
+              "NEXORA",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 42,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            SizedBox(height: 10),
+
+            Text(
+              "AI • Gamification • Personalized Learning",
+              style: TextStyle(color: Colors.white70),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class LoginPage extends StatelessWidget {
+  const LoginPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.school, size: 100),
+
+            const SizedBox(height: 20),
+
+            const Text(
+              "NEXORA",
+              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+
+            const Text(
+              "AI • Gamification • Personalized Learning",
+              textAlign: TextAlign.center,
+            ),
+
+            const SizedBox(height: 30),
+
+            TextField(
+              decoration: InputDecoration(
+                labelText: "Email",
+                border: OutlineInputBorder(),
+              ),
+            ),
+
+            const SizedBox(height: 15),
+
+            TextField(
+              obscureText: true,
+              decoration: InputDecoration(
+                labelText: "Password",
+                border: OutlineInputBorder(),
+              ),
+            ),
+
+            const SizedBox(height: 25),
+
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) => const MoodLearningPage()),
+                );
+              },
+              child: const Text("Login"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class MainPage extends StatefulWidget {
+  const MainPage({super.key});
+
+  @override
+  State<MainPage> createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  int currentIndex = 0;
+
+  final pages = const [
+    DashboardPage(),
+    NexflixPage(),
+    NexWorldPage(),
+    NexCardPage(),
+    ProfilePage(),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("NEXORA")),
+
+      body: pages[currentIndex],
+
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            builder: (context) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    leading: const Icon(Icons.smart_toy),
+                    title: const Text("NexBot Chat"),
+                    onTap: () {
+                      Navigator.pop(context);
+
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: const Text("NexBot"),
+                            content: const Text(
+                              "Halo Restu 👋\n\n"
+                              "Saya NexBot.\n\n"
+                              "Berdasarkan hasil Mood Learning,\n"
+                              "hari ini saya merekomendasikan:\n\n"
+                              "📚 Pecahan Matematika\n"
+                              "🎯 Quiz Dasar\n\n"
+                              "Semangat belajar!",
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text("Tutup"),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.mood),
+                    title: const Text("Mood Learning"),
+                    onTap: () {
+                      Navigator.pop(context);
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const MoodLearningPage(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+        child: const Icon(Icons.smart_toy),
+      ),
+
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: currentIndex,
+        onDestinationSelected: (index) {
+          setState(() {
+            currentIndex = index;
+          });
+        },
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.home), label: "Dashboard"),
+          NavigationDestination(
+            icon: Icon(Icons.play_circle),
+            label: "Nexflix",
+          ),
+          NavigationDestination(icon: Icon(Icons.public), label: "NexWorld"),
+          NavigationDestination(icon: Icon(Icons.style), label: "NexCard"),
+          NavigationDestination(icon: Icon(Icons.person), label: "Profil"),
+        ],
+      ),
+    );
+  }
+}
+
+class DashboardPage extends StatelessWidget {
+  const DashboardPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "👋 Selamat Datang Explorer!",
+            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+          ),
+
+          const SizedBox(height: 10),
+
+          LinearProgressIndicator(
+            value: 0.75,
+            minHeight: 12,
+            borderRadius: BorderRadius.circular(20),
+          ),
+
+          SizedBox(height: 8),
+
+          Text("XP 1250 / 1500", style: TextStyle(fontWeight: FontWeight.bold)),
+
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              gradient: const LinearGradient(
+                colors: [Color(0xFF6C63FF), Color(0xFF8B5CF6)],
+              ),
+            ),
+            child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Explorer Avatar",
+                  style: TextStyle(color: Colors.white70),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  "Level 5 • XP 1250",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  "AI merekomendasikan materi Pecahan Matematika hari ini",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          const Text(
+            "Rekomendasi Belajar",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+
+          const SizedBox(height: 10),
+
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.play_circle_fill),
+              title: const Text("Pecahan Matematika"),
+              subtitle: const Text("Video 1 menit"),
+              trailing: const Icon(Icons.arrow_forward_ios),
+            ),
+          ),
+
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.science),
+              title: const Text("Sistem Tata Surya"),
+              subtitle: const Text("Quiz Interaktif"),
+              trailing: const Icon(Icons.arrow_forward_ios),
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          const Text(
+            "Misi Harian",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+
+          const SizedBox(height: 10),
+
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.flag),
+              title: const Text("Selesaikan 3 video Nexflix"),
+            ),
+          ),
+
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.flag),
+              title: const Text("Raih 100 XP hari ini"),
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          const Text(
+            "Achievement",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+
+          const SizedBox(height: 10),
+
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.emoji_events),
+              title: const Text("Explorer Level 1"),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class NexflixPage extends StatelessWidget {
+  const NexflixPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        Card(
+          child: Column(
+            children: [
+              Container(
+                height: 180,
+                width: double.infinity,
+                alignment: Alignment.center,
+                child: const Icon(Icons.play_circle_fill, size: 80),
+              ),
+
+              const Padding(
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Pecahan Matematika",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    SizedBox(height: 8),
+
+                    Text("Video pembelajaran singkat 1 menit"),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 20),
+
+        const Text(
+          "AI Quiz",
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+        ),
+
+        const SizedBox(height: 10),
+
+        Card(
+          child: Padding(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              children: [
+                Text("1/2 + 1/2 = ?", style: TextStyle(fontSize: 18)),
+
+                SizedBox(height: 12),
+
+                ListTile(title: Text("A. 1")),
+                ListTile(title: Text("B. 2")),
+                ListTile(title: Text("C. 3")),
+                ListTile(title: Text("D. 4")),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class NexWorldPage extends StatelessWidget {
+  const NexWorldPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        const Text(
+          "🌍 NexWorld",
+          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+        ),
+
+        const SizedBox(height: 20),
+
+        Card(
+          child: ListTile(
+            leading: Icon(Icons.calculate),
+            title: Text("MathLand"),
+            subtitle: Text("5 Misi tersedia"),
+          ),
+        ),
+
+        Card(
+          child: ListTile(
+            leading: Icon(Icons.science),
+            title: Text("ScienceVerse"),
+            subtitle: Text("4 Misi tersedia"),
+          ),
+        ),
+
+        Card(
+          child: ListTile(
+            leading: Icon(Icons.public),
+            title: Text("Social Planet"),
+            subtitle: Text("3 Misi tersedia"),
+          ),
+        ),
+
+        Card(
+          child: ListTile(
+            leading: Icon(Icons.menu_book),
+            title: Text("Language Kingdom"),
+            subtitle: Text("6 Misi tersedia"),
+          ),
+        ),
+
+        const SizedBox(height: 20),
+
+        const Text(
+          "Misi Aktif",
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+        ),
+
+        const SizedBox(height: 10),
+
+        Card(
+          child: ListTile(
+            leading: Icon(Icons.flag),
+            title: Text("Selesaikan 3 soal pecahan"),
+            trailing: Icon(Icons.check_circle_outline),
+          ),
+        ),
+
+        Card(
+          child: ListTile(
+            leading: Icon(Icons.flag),
+            title: Text("Kumpulkan 100 XP"),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class NexCardPage extends StatelessWidget {
+  const NexCardPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.count(
+      padding: const EdgeInsets.all(16),
+      crossAxisCount: 2,
+      crossAxisSpacing: 12,
+      mainAxisSpacing: 12,
+      children: [
+        _card("🔥 Fire Master", "Epic"),
+        _card("🌍 Explorer", "Rare"),
+        _card("⭐ Quiz Champion", "Legendary"),
+        _card("🚀 Fast Learner", "Epic"),
+      ],
+    );
+  }
+
+  Widget _card(String title, String rarity) {
+    return Card(
+      elevation: 4,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            Text(rarity),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ProfilePage extends StatelessWidget {
+  const ProfilePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        const Center(
+          child: CircleAvatar(radius: 50, child: Icon(Icons.person, size: 50)),
+        ),
+
+        const SizedBox(height: 16),
+
+        const Center(
+          child: Text(
+            "Restu Hendra",
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+        ),
+
+        const Center(child: Text("Level 5 • XP 1250")),
+
+        const SizedBox(height: 24),
+
+        Card(
+          child: ListTile(
+            leading: Icon(Icons.emoji_events),
+            title: Text("Achievement"),
+            subtitle: Text("12 Achievement"),
+          ),
+        ),
+
+        Card(
+          child: ListTile(
+            leading: Icon(Icons.style),
+            title: Text("NexCard"),
+            subtitle: Text("8 Kartu Terkumpul"),
+          ),
+        ),
+
+        Card(
+          child: ListTile(
+            leading: Icon(Icons.bar_chart),
+            title: Text("Progress Belajar"),
+            subtitle: Text("78%"),
+          ),
+        ),
+
+        const SizedBox(height: 20),
+
+        ElevatedButton.icon(
+          onPressed: () {},
+          icon: const Icon(Icons.logout),
+          label: const Text("Logout"),
+        ),
+      ],
+    );
+  }
+}
+
+class MoodLearningPage extends StatelessWidget {
+  const MoodLearningPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Mood Learning")),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            const SizedBox(height: 30),
+
+            const CircleAvatar(
+              radius: 60,
+              child: Icon(Icons.sentiment_very_satisfied, size: 60),
+            ),
+
+            const SizedBox(height: 20),
+
+            const Text(
+              "Mood Terdeteksi",
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+
+            const SizedBox(height: 10),
+
+            const Text(
+              "Happy & Ready To Learn",
+              style: TextStyle(fontSize: 18),
+            ),
+
+            const SizedBox(height: 30),
+
+            Card(
+              child: ListTile(
+                leading: Icon(Icons.auto_awesome),
+                title: Text("Avatar Generated"),
+                subtitle: Text("Explorer Mood"),
+              ),
+            ),
+            const SizedBox(height: 30),
+
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => const MainPage()),
+                  );
+                },
+                child: const Text("Masuk ke Dashboard"),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
